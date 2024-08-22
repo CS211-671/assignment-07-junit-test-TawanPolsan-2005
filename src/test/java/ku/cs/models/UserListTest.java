@@ -1,7 +1,10 @@
 package ku.cs.models;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,13 +14,16 @@ class UserListTest {
     @DisplayName("User should be found in UserList")
     public void testUserListFindUser() {
         // TODO: add 3 users to UserList
-
+        UserList userList = new UserList();
+        userList.addUser("ping", "123");
+        userList.addUser("per", "456");
+        userList.addUser("pung", "789");
         // TODO: find one of them
-
+        User user = userList.findUserByUsername("ping");
         // TODO: assert that UserList found User
-        // String expected = "<one of username>";
-        // String actual = user.getUsername();
-        // assertEquals(expected, actual);
+        String expected = "ping";
+        String actual = user.getUsername();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -45,7 +51,10 @@ class UserListTest {
         // TODO: call login() with correct username and password
         User actual = userList.login("ping", "123");
         // TODO: assert that User object is found
-         assertEquals(true, actual);
+        assertNotNull(actual);
+        String expectedUsername = "ping";
+        String actualUsername = actual.getUsername();
+        assertEquals(expectedUsername, actualUsername);
     }
 
     @Test

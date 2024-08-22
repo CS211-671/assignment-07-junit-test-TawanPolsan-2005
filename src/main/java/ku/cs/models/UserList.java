@@ -1,5 +1,7 @@
 package ku.cs.models;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 import java.util.ArrayList;
 
 public class UserList {
@@ -30,13 +32,12 @@ public class UserList {
     //TODO: implements this method to change user's password to newPassword by verified oldPassword
     //TODO: return true if process is completed, otherwise return false
     public boolean changePassword(String username, String oldPassword, String newPassword) {
-        if (findUserByUsername(username) != null) {
-            if (findUserByUsername(username).getPassword().equals(oldPassword)) {
-                users.get(users.indexOf(findUserByUsername(username))).setPassword(newPassword);
-                return true;
-            } else {
-                return false;
-            }
+        User exist = findUserByUsername(username);
+        if (exist == null) {
+            return false;
+        } if (exist.validatePassword(oldPassword)) {
+            exist.setPassword(newPassword);
+            return true;
         } else {
             return false;
         }
@@ -46,10 +47,11 @@ public class UserList {
     //TODO: return User object if username and password is correct, otherwise return null
     public User login(String username, String password) {
         for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                return user;
-            } else {
-                return null;
+            if (user.getUsername().equals(username)) {
+                BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
+                if (result.verified) {
+                    return user;
+                }
             }
         }
         return null;
